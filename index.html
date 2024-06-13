@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Countdown Timer</title>
+    <style>
+         body {
+                font-family: Arial, sans-serif;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                background: #282c34;
+                color: white;
+                margin: 0;
+            }
+
+            #timer-container {
+                text-align: center;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+
+            #timer-form {
+                margin-bottom: 20px;
+            }
+
+            #timer-form label,
+            #timer-form input,
+            #timer-form button {
+                margin: 5px;
+            }
+
+            #countdown {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-size: 2rem;
+                margin-bottom: 10px; /* Adjusted margin */
+            }
+
+            #countdown div {
+                margin: 0 10px;
+                text-align: center;
+            }
+
+            #countdown span {
+                display: block;
+                font-size: 4rem;
+            }
+
+            #event-name {
+                font-size: 1.5rem;
+                margin-top: 20px; /* Adjusted margin */
+                text-align: center;
+                width: 100%; /* Ensures the text is centered */
+            }
+
+    </style>
+</head>
+
+<body>
+    <div id="timer-container">
+        <form id="timer-form">
+            <label for="event">Event Name:</label>
+            <input type="text" id="event" name="event" placeholder="Enter event name">
+            <label for="datetime">Set Countdown Date and Time:</label>
+            <input type="datetime-local" id="datetime" name="datetime">
+            <button type="button" id="start-button">Start Countdown</button>
+            <button type="button" id="reset-button">Reset</button>
+        </form>
+        <div id="countdown">
+            <div><span id="days">0</span> Days</div>
+            <div><span id="hours">0</span> Hours</div>
+            <div><span id="minutes">0</span> Minutes</div>
+            <div><span id="seconds">0</span> Seconds</div>
+        </div>
+        <div id="event-name"></div>
+    </div>
+    <script>
+        let countdownInterval;
+
+            document.getElementById("start-button").addEventListener("click", function () {
+                // Clear any existing countdown interval
+                clearInterval(countdownInterval);
+
+                // Get the user input date, time, and event name
+                const datetimeInput = document.getElementById("datetime").value;
+                const eventName = document.getElementById("event").value;
+
+                if (!datetimeInput) {
+                    alert("Please select a date and time.");
+                    return;
+                }
+
+                // Display the event name
+                document.getElementById("event-name").innerText = eventName;
+
+                const countDownDate = new Date(datetimeInput).getTime();
+
+                // Function to update the countdown
+                const updateCountdown = () => {
+                    const now = new Date().getTime();
+                    const distance = countDownDate - now;
+
+                    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                    document.getElementById("days").innerText = days;
+                    document.getElementById("hours").innerText = hours;
+                    document.getElementById("minutes").innerText = minutes;
+                    document.getElementById("seconds").innerText = seconds;
+
+                    if (distance < 0) {
+                        clearInterval(countdownInterval);
+                        document.getElementById("countdown").innerHTML = "EXPIRED";
+                        document.getElementById("event-name").innerText = `${eventName} - EXPIRED`;
+                    }
+                };
+
+                // Update the countdown every 1 second
+                countdownInterval = setInterval(updateCountdown, 1000);
+                updateCountdown();
+            });
+
+            document.getElementById("reset-button").addEventListener("click", function () {
+                // Clear the countdown interval
+                clearInterval(countdownInterval);
+
+                // Reset the countdown display and event name
+                document.getElementById("days").innerText = 0;
+                document.getElementById("hours").innerText = 0;
+                document.getElementById("minutes").innerText = 0;
+                document.getElementById("seconds").innerText = 0;
+                document.getElementById("event-name").innerText = "";
+
+                // Clear the datetime and event input
+                document.getElementById("datetime").value = "";
+                document.getElementById("event").value = "";
+            });
+
+    </script>
+</body>
+
+</html>
